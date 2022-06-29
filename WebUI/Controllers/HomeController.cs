@@ -31,6 +31,7 @@ namespace WebUI.Controllers
                 using (var stream = new FileStream(path,FileMode.OpenOrCreate))
                 {
                     await file.CopyToAsync(stream);
+                    stream.Flush();
                 }
                 var result = _hotelManager.Read(path);
                 if (result.Success)
