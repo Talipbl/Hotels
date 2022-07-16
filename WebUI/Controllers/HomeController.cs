@@ -1,4 +1,5 @@
-﻿using Business.Concrete;
+﻿using Business.Abstracts;
+using Business.Concrete;
 using DataAccess.Concrete;
 using Entity.Concrete;
 using Microsoft.AspNetCore.Mvc;
@@ -9,13 +10,13 @@ namespace WebUI.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        HotelManager _hotelManager = new HotelManager(new HotelDal());
+        IHotelService _hotelService;
         private static List<Hotel> _hotels = new List<Hotel>();
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IHotelService hotelService)
         {
-            _logger = logger;
+            _hotelService = hotelService;
         }
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -33,7 +34,7 @@ namespace WebUI.Controllers
                     await file.CopyToAsync(stream);
                     stream.Flush();
                 }
-                var result = _hotelManager.Read(path);
+                var result = _hotelService.Read(path);
                 if (result.Success)
                 {
                     ListHotelsViewModel model = new ListHotelsViewModel()
@@ -53,14 +54,14 @@ namespace WebUI.Controllers
         [HttpGet]
         public IActionResult WriteAsJson(string path)
         {
-            var result = _hotelManager.WriteAsJson(path,_hotels);
+            var result = _hotelService.WriteAsJson(path,_hotels);
             TempData["message"] = result.Message;
             return View(nameof(Index));
         }
         [HttpGet]
         public IActionResult WriteAsXml(string path)
         {
-            var result = _hotelManager.WriteAsXml(path, _hotels);
+            var result = _hotelService.WriteAsXml(path, _hotels);
             TempData["message"] = result.Message;
             return View(nameof(Index));
         }

@@ -1,7 +1,15 @@
+using Business.Abstracts;
+using Business.Concrete;
+using DataAccess.Abstracts;
+using DataAccess.Concrete;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddSingleton<IHotelDal, HotelDal>();
+builder.Services.AddSingleton<IHotelService, HotelManager>();
 
 var app = builder.Build();
 
